@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  address   String
+  phone     String
+  password     String
+  carts     Cart[]
+  invoices  Invoice[]
+}
+
+model Authors {
+  id        String   @id @default(uuid())
+  name      String
+  bio       String
+  birthdate DateTime
+  books     Books[]
+}
+
+model Books {
+  id               String         @id @default(uuid())
+  title            String
+  isbn             String         @unique
+  publication_year Int
+  genre            String
+  author_id        String
+  author           Authors        @relation(fields: [author_id], references: [id])
+  products         BooksProduct[]
+}
+
+model Warehouse {
+  id       String         @id @default(uuid())
+  name     String
+  location String
+  capacity Int
+  products BooksProduct[]
+}
+
+model BooksProduct {
+  id            String        @id @default(uuid())
+  book_id       String
+  price         Float
+  stock         Int
+  format        String
+  warehouse_id  String
+
+  book          Books         @relation(fields: [book_id], references: [id])
+  warehouse     Warehouse     @relation(fields: [warehouse_id], references: [id])
+  cart_items    CartItem[]
+  invoice_items InvoiceItem[]
+}
+
+model Cart {
+  id          String      @id @default(uuid())
+  customer_id String
+  created_at  DateTime    @default(now())
+  items       CartItem[]
+  invoice     Invoice?
+
+  customer    Customer    @relation(fields: [customer_id], references: [id])
+}
+
+model CartItem {
+  id                String        @id @default(uuid())
+  books_product_id  String
+  quantity          Int
+  created_at        DateTime      @default(now())
+  cart_id           String
+
+  book_product      BooksProduct  @relation(fields: [books_product_id], references: [id])
+  cart              Cart          @relation(fields: [cart_id], references: [id])
+}
+
+model Invoice {
+  id            String       @id @default(uuid())
+  total_amount  Float
+  issued_at     DateTime     @default(now())
+  status        String
+  customer_id   String
+  cart_id       String       @unique
+
+  customer      Customer     @relation(fields: [customer_id], references: [id])
+  cart          Cart         @relation(fields: [cart_id], references: [id])
+  items         InvoiceItem[]
+}
+
+model InvoiceItem {
+  id                String        @id @default(uuid())
+  books_product_id  String
+  quantity          Int
+  price             Float
+  invoice_id        String
+
+  book_product      BooksProduct  @relation(fields: [books_product_id], references: [id])
+  invoice           Invoice       @relation(fields: [invoice_id], references: [id])
+}
