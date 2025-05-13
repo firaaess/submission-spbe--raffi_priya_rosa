@@ -16,3 +16,4 @@ app.use('/api', routes);
 app.listen(9090, () => {
   console.log(`Server is running on http://localhost:9090`);
 });
+  
