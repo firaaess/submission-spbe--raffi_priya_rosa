@@ -2,12 +2,12 @@
   "name": "bookstore-api",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module", 
+  "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "seed" : "node prisma/seed.js"
-  },  
+    "seed": "node prisma/seed.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -20,6 +20,7 @@
     "prisma": "^6.7.0"
   },
   "devDependencies": {
+    "@vercel/node": "^5.1.16",
     "dotenv": "^16.5.0",
     "nodemon": "^3.1.10"
   }
